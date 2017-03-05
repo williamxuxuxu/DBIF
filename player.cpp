@@ -41,4 +41,6 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * process the opponent's opponents move before calculating your own move
      */
     return nullptr;
+
+// Here's a test comment.
 }
