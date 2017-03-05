@@ -41,6 +41,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * process the opponent's opponents move before calculating your own move
      */
     return nullptr;
-
-// Here's a test comment.
+// We will primaily try to write a machine learning based AI that will determine
+// moves.
+//
+// Here's a test comment to see how git deals with multiple versions
 }
