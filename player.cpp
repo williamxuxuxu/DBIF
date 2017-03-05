@@ -45,6 +45,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 // strategy faithful to the metric yields the highest win rate.
 
     return nullptr;
-
-// Here's a test comment.
+// We will primaily try to write a machine learning based AI that will determine
+// moves.
+//
+// Here's a test comment to see how git deals with multiple versions
 }
