@@ -45,4 +45,6 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 // strategy faithful to the metric yields the highest win rate.
 
     return nullptr;
+
+// Here's a test comment.
 }
