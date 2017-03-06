@@ -55,6 +55,25 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     if (!board1->hasMoves(pl_side)) {
         return nullptr;
     }
+    int max = -64;
+    Move *minimax = new Move(0,0);
+    if (testingMinimax) {
+        for (int i = 0; i < 8; i ++) {
+            for (int j = 0; j < 8; j ++) {
+                Board *temp = board1->copy();
+                Move *curr_move = new Move(i,j);
+                if (temp->checkMove(curr_move, pl_side)) {
+                    temp->doMove(curr_move, pl_side);
+                    int min_score = minScore(pl_side, temp);
+                    if (min_score > max) {
+                        max = min_score;
+                        minimax = curr_move;
+                    }
+                }
+            }
+        }
+        return minimax;
+    }
     double max_score = -64.0;
     Move *max_move = new Move(0,0);
     
@@ -76,4 +95,39 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 // moves.
 //
 // Here's a test comment to see how git deals with multiple versions
+}
+
+void Player::setPlayerBoard(char data[]) {
+    board1->setBoard(data);
+}
+
+int Player::minScore(Side side, Board *board2) {
+    Side other;
+    int min = 64;
+    if (side == BLACK) {
+        other = WHITE;
+    }
+    else {
+        other = BLACK;
+    }
+    for (int i = 0; i < 8; i ++) {
+        for (int j = 0; j < 8; j ++) {
+            Board *temp = board2->copy();
+            Move *curr_move = new Move(i,j);
+            if (temp->checkMove(curr_move, other)) {
+                temp->doMove(curr_move, other);
+                int score;
+                if (side == WHITE) {
+                    score = temp->countWhite() - temp->countBlack();
+                }
+                else {
+                    score = temp->countBlack() - temp->countWhite();
+                }
+                if (score < min) {
+                    min = score;
+                }
+            }
+        }
+    }
+    return min;
 }

@@ -13,7 +13,8 @@ public:
     ~Player();
 
     Move *doMove(Move *opponentsMove, int msLeft);
-
+    int minScore(Side side, Board *board2);
+    void setPlayerBoard(char data[]);
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
     Board *board1;
