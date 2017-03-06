@@ -8,7 +8,8 @@
 Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
-
+    pl_side = side;
+    board1 = new Board();
     /*
      * TODO: Do any initialization you need to do here (setting up the board,
      * precalculating things, etc.) However, remember that you will only have
@@ -43,8 +44,34 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
 // Use machine learning to figure out an ideal board metric such that a
 // strategy faithful to the metric yields the highest win rate.
-
-    return nullptr;
+    if (opponentsMove != nullptr) {
+        if (pl_side == WHITE) {
+            board1->doMove(opponentsMove, BLACK);
+        }
+        else {
+            board1->doMove(opponentsMove, WHITE);
+        }
+    }
+    if (!board1->hasMoves(pl_side)) {
+        return nullptr;
+    }
+    double max_score = -64.0;
+    Move *max_move = new Move(0,0);
+    
+    for (int i = 0; i < 8; i ++) {
+        for (int j = 0; j < 8; j ++) {
+            Board *temp = board1->copy();
+            Move *curr_move = new Move(i,j);
+            if (temp->checkMove(curr_move, pl_side)) {
+                if (temp->boardScore(curr_move, pl_side) > max_score) {
+                    max_move = curr_move;
+                    max_score = temp->boardScore(curr_move, pl_side);
+                }
+            }
+        }
+    }
+    board1->doMove(max_move, pl_side);
+    return max_move;
 // We will primaily try to write a machine learning based AI that will determine
 // moves.
 //
