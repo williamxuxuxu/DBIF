@@ -1,4 +1,6 @@
 #include "player.hpp"
+#include <limits>
+#include <algorithm>
 
 /*
  * Constructor for the player; initialize everything here. The side your AI is
@@ -42,6 +44,43 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * process the opponent's opponents move before calculating your own move
      */
 
+    if (opponentsMove != nullptr) {
+        if (pl_side == WHITE) {
+            board1->doMove(opponentsMove, BLACK);
+        }
+        else {
+            board1->doMove(opponentsMove, WHITE);
+        }
+    }
+    if (!board1->hasMoves(pl_side)) {
+        return nullptr;
+    }
+
+    Move   *max_move = new Move(0,0);
+    double max_score = –std::numeric_limits<double>::infinity();
+    for (int i = 0; i < ; i++)
+    {
+        for (int j = 0; j < ; j++)
+        {
+            board *temp = board->copy();
+            Move *curr_move = new Move(i, j);
+            if (temp->checkMove(curr_move, pl_side))
+            {
+                double temp_score = this->negamax(board1, 3,
+                                                  –std::numeric_limits<double>::infinity(),
+                                                  std::numeric_limits<double>::infinity(), 
+                                                  1, pl_side);
+                if (temp_score > max_score)
+                {
+                    max_score = temp_score;
+                    max_move  = curr_move;
+                }
+            }
+            delete temp;
+            delete curr_move;
+        }
+    } // return is after block comment
+/*
 // Use machine learning to figure out an ideal board metric such that a
 // strategy faithful to the metric yields the highest win rate.
     if (opponentsMove != nullptr) {
@@ -90,6 +129,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         }
     }
     board1->doMove(max_move, pl_side);
+*/
     return max_move;
 // We will primaily try to write a machine learning based AI that will determine
 // moves.
@@ -130,4 +170,49 @@ int Player::minScore(Side side, Board *board2) {
         }
     }
     return min;
+}
+
+double Player::negamax(Board *board, int depth, double alpha, double beta, int color, Side side)
+{
+    double bestValue = –std::numeric_limits<double>::infinity();
+
+    if ((depth == 0) || (board->isDone()))
+    {
+        bestValue = color * board->boardScore();
+    }
+    else
+    {
+        Side other;
+        if (side == BLACK) {
+            other = WHITE;
+        }
+        else {
+            other = BLACK;
+        }
+
+        for (int i = 0; i < ; i++)
+        {
+            for (int j = 0; j < ; j++)
+            {
+                board *temp = board->copy();
+                Move *curr_move = new Move(i, j);
+                if (temp->checkMove(curr_move, other))
+                {
+                    temp->doMove(curr_move, other);
+                    v = -negamax(temp, depth - 1, -beta, -alpha, -color, other);
+                    bestValue = std::max(bestValue, v);
+                    alpha = std::max(alpha, v);
+                    if ( alpha >= beta)
+                    {
+                        goto stop;
+                    }
+                }
+                delete temp;
+                delete curr_move;
+            }
+        }
+    }
+    stop:
+    return bestValue;
+    
 }
