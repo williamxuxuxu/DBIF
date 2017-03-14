@@ -16,7 +16,9 @@ Board::Board() {
 /*
  * Destructor for the board.
  */
-Board::~Board() {
+Board::~Board() 
+{
+    
 }
 
 /*

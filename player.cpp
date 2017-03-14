@@ -1,6 +1,8 @@
+#define DEPTH 7
+
 #include "player.hpp"
 #include <algorithm>
-
+#include <iostream>
 /*
  * Constructor for the player; initialize everything here. The side your AI is
  * on (BLACK or WHITE) is passed in as "side". The constructor must finish
@@ -56,29 +58,28 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     }
     
     Side other = (pl_side == BLACK) ? WHITE : BLACK;
-
+    Board *boards[DEPTH+1];
+    Move *curr_move;
     Move *max_move = new Move(0,0);
     double max_score = 1000000000;
     for (int i = 0; i < 8 ; i++)
     {
         for (int j = 0; j < 8 ; j++)
         {
-            Board *temp = board1->copy();
-            Move *curr_move = new Move(i, j);
-            if (temp->checkMove(curr_move, pl_side))
+            boards[DEPTH] = board1->copy();
+            curr_move = new Move(i, j);
+            if (boards[DEPTH]->checkMove(curr_move, pl_side))
             {
-                temp->doMove(curr_move, pl_side);                
-                double temp_score = this->negamax(temp, 6,
-                                                  -10000,
-                                                  10000, 
-                                                  1, other);
+
+                boards[DEPTH]->doMove(curr_move, pl_side);                
+                double temp_score = this->negamax(boards, DEPTH, -10000, 10000, 1, other);
                 if (temp_score < max_score)
                 {
                     max_score = temp_score;
                     max_move  = curr_move;
                 }
             }
-            delete temp;
+            delete boards[DEPTH];
         }
     } // return is after block comment
 /*
@@ -174,12 +175,12 @@ int Player::minScore(Side side, Board *board2) {
     return min;
 }
 
-double Player::negamax(Board *board, int depth, double alpha, double beta, int color, Side side)
+double Player::negamax(Board *boards[], int depth, double alpha, double beta, int color, Side side)
 {
     double bestValue = -10000;
-    if ((depth == 0) || (board->isDone()))
+    if ((depth == 0) || (boards[depth]->isDone()))
     {
-        bestValue = color * board->boardScore(side);
+        bestValue = color * boards[depth]->boardScore(side);
     }
     else
     {
@@ -190,26 +191,28 @@ double Player::negamax(Board *board, int depth, double alpha, double beta, int c
         else {
             other = BLACK;
         }
-
+        Move *curr_move;
         for (int i = 0; i < 8 ; i++)
         {
             for (int j = 0; j < 8 ; j++)
             {
-                Board *temp = board->copy();
-                Move *curr_move = new Move(i, j);
-                if (temp->checkMove(curr_move, side))
+                //std::cerr << "h" << std::endl;
+                boards[depth-1] = boards[depth]->copy();
+                //std::cerr << "B4 move" << std::endl;
+                curr_move = new Move(i, j);
+                if (boards[depth-1]->checkMove(curr_move, side))
                 {
-                    temp->doMove(curr_move, side);
-                    double v = -negamax(temp, depth - 1, -beta, -alpha, -color, other);
+                    //std::cerr << "In if state" << std::endl;
+                    boards[depth-1]->doMove(curr_move, side);
+                    double v = -negamax(boards, depth - 1, -beta, -alpha, -color, other);
                     bestValue = std::max(bestValue, v);
                     alpha = std::max(alpha, v);
                     if ( alpha >= beta)
                     {
-                        delete temp;
                         goto stop;
                     }
                 }
-                delete temp;
+                delete boards[depth-1];
             }
         }
     }
