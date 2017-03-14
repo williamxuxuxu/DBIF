@@ -10,6 +10,7 @@ Board::Board() {
     taken.set(4 + 8 * 4);
     black.set(4 + 8 * 3);
     black.set(3 + 8 * 4);
+                             
 }
 
 /*
@@ -53,10 +54,10 @@ double Board::boardScore(Move *m, Side side) {
     for (int i = 0; i < 8; i ++) {
         for (int j = 0; j < 8; j ++) {
             if (occupied(x,y) && get(side, x, y)) {
-                total += 1;
+                total += (8*board_heur[i][j] + 1);
             }
             else if(occupied(x,y)) {
-                total -= 1;
+                total -= (8*board_heur[i][j] + 1);
             }
         }
     }
