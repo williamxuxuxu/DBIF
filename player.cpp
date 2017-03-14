@@ -58,7 +58,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     Side other = (pl_side == BLACK) ? WHITE : BLACK;
 
     Move *max_move = new Move(0,0);
-    double max_score = -10000;
+    double max_score = 1000000000;
     for (int i = 0; i < 8 ; i++)
     {
         for (int j = 0; j < 8 ; j++)
@@ -68,18 +68,17 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             if (temp->checkMove(curr_move, pl_side))
             {
                 temp->doMove(curr_move, pl_side);                
-                double temp_score = this->negamax(temp, 4,
+                double temp_score = this->negamax(temp, 6,
                                                   -10000,
                                                   10000, 
                                                   1, other);
-                if (temp_score > max_score)
+                if (temp_score < max_score)
                 {
                     max_score = temp_score;
                     max_move  = curr_move;
                 }
             }
-            //delete temp;
-            //delete curr_move;
+            delete temp;
         }
     } // return is after block comment
 /*
@@ -206,13 +205,11 @@ double Player::negamax(Board *board, int depth, double alpha, double beta, int c
                     alpha = std::max(alpha, v);
                     if ( alpha >= beta)
                     {
-                        //delete temp;
-                        //delete curr_move;
+                        delete temp;
                         goto stop;
                     }
                 }
-                //delete temp;
-                //delete curr_move;
+                delete temp;
             }
         }
     }
