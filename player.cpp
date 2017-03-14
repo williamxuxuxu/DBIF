@@ -1,5 +1,6 @@
 #include "player.hpp"
 #include <algorithm>
+#include <iostream>
 
 /*
  * Constructor for the player; initialize everything here. The side your AI is
@@ -68,7 +69,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             if (temp->checkMove(curr_move, pl_side))
             {
                 temp->doMove(curr_move, pl_side);                
-                double temp_score = this->negamax(temp, 6,
+                double temp_score = this->negamax(temp, 4,
                                                   -10000,
                                                   10000, 
                                                   1, other);
@@ -186,6 +187,7 @@ double Player::negamax(Board *board, int depth, double alpha, double beta, int c
         Side other;
         if (side == BLACK) {
             other = WHITE;
+    
         }
         else {
             other = BLACK;
@@ -214,6 +216,6 @@ double Player::negamax(Board *board, int depth, double alpha, double beta, int c
         }
     }
     stop:
-    return bestValue;
+    return bestValue + .01;
     
 }

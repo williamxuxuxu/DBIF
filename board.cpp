@@ -51,10 +51,10 @@ double Board::boardScore(Side side) {
     for (int i = 0; i < 8; i ++) {
         for (int j = 0; j < 8; j ++) {
             if (occupied(i,j) && get(side, i, j)) {
-                total += (board_heur[i][j] );
+                total += (board_heur[i][j] + .05);
             }
             else if(occupied(i,j)) {
-                total -= (board_heur[i][j]);
+                total -= (board_heur[i][j] + .05);
             }
         }
     }
