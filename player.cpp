@@ -1,5 +1,4 @@
 #include "player.hpp"
-#include <limits>
 #include <algorithm>
 
 /*
@@ -55,6 +54,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     if (!board1->hasMoves(pl_side)) {
         return nullptr;
     }
+    
+    Side other = (pl_side == BLACK) ? WHITE : BLACK;
 
     Move *max_move = new Move(0,0);
     double max_score = -10000;
@@ -66,16 +67,19 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             Move *curr_move = new Move(i, j);
             if (temp->checkMove(curr_move, pl_side))
             {
-                double temp_score = this->negamax(board1, 3,
+                temp->doMove(curr_move, pl_side);                
+                double temp_score = this->negamax(temp, 4,
                                                   -10000,
                                                   10000, 
-                                                  1, pl_side);
+                                                  1, other);
                 if (temp_score > max_score)
                 {
                     max_score = temp_score;
                     max_move  = curr_move;
                 }
             }
+            //delete temp;
+            //delete curr_move;
         }
     } // return is after block comment
 /*
@@ -128,6 +132,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     }
     board1->doMove(max_move, pl_side);
 */
+    board1->doMove(max_move, pl_side);
     return max_move;
 // We will primaily try to write a machine learning based AI that will determine
 // moves.
@@ -193,17 +198,21 @@ double Player::negamax(Board *board, int depth, double alpha, double beta, int c
             {
                 Board *temp = board->copy();
                 Move *curr_move = new Move(i, j);
-                if (temp->checkMove(curr_move, other))
+                if (temp->checkMove(curr_move, side))
                 {
-                    temp->doMove(curr_move, other);
+                    temp->doMove(curr_move, side);
                     double v = -negamax(temp, depth - 1, -beta, -alpha, -color, other);
                     bestValue = std::max(bestValue, v);
                     alpha = std::max(alpha, v);
                     if ( alpha >= beta)
                     {
+                        //delete temp;
+                        //delete curr_move;
                         goto stop;
                     }
                 }
+                //delete temp;
+                //delete curr_move;
             }
         }
     }
