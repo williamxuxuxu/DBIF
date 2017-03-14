@@ -199,7 +199,7 @@ double Player::negamax(Board *board, int depth, double alpha, double beta, int c
                 if (temp->checkMove(curr_move, other))
                 {
                     temp->doMove(curr_move, other);
-                    v = -negamax(temp, depth - 1, -beta, -alpha, -color, other);
+                    double v = -negamax(temp, depth - 1, -beta, -alpha, -color, other);
                     bestValue = std::max(bestValue, v);
                     alpha = std::max(alpha, v);
                     if ( alpha >= beta)
