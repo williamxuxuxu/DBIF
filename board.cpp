@@ -46,17 +46,14 @@ bool Board::onBoard(int x, int y) {
     return(0 <= x && x < 8 && 0 <= y && y < 8);
 }
 
-double Board::boardScore(Move *m, Side side) {
+double Board::boardScore(Side side) {
     double total = 0.0;
-    doMove(m, side);
-    int x = m->getX();
-    int y = m->getY();
     for (int i = 0; i < 8; i ++) {
         for (int j = 0; j < 8; j ++) {
-            if (occupied(x,y) && get(side, x, y)) {
+            if (occupied(i,j) && get(side, i, j)) {
                 total += (8*board_heur[i][j] + 1);
             }
-            else if(occupied(x,y)) {
+            else if(occupied(i,j)) {
                 total -= (8*board_heur[i][j] + 1);
             }
         }

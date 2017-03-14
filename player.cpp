@@ -56,19 +56,19 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         return nullptr;
     }
 
-    Move   *max_move = new Move(0,0);
-    double max_score = –std::numeric_limits<double>::infinity();
-    for (int i = 0; i < ; i++)
+    Move *max_move = new Move(0,0);
+    double max_score = -10000;
+    for (int i = 0; i < 8 ; i++)
     {
-        for (int j = 0; j < ; j++)
+        for (int j = 0; j < 8 ; j++)
         {
-            board *temp = board->copy();
+            Board *temp = board1->copy();
             Move *curr_move = new Move(i, j);
             if (temp->checkMove(curr_move, pl_side))
             {
                 double temp_score = this->negamax(board1, 3,
-                                                  –std::numeric_limits<double>::infinity(),
-                                                  std::numeric_limits<double>::infinity(), 
+                                                  -10000,
+                                                  10000, 
                                                   1, pl_side);
                 if (temp_score > max_score)
                 {
@@ -76,8 +76,6 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
                     max_move  = curr_move;
                 }
             }
-            delete temp;
-            delete curr_move;
         }
     } // return is after block comment
 /*
@@ -174,11 +172,10 @@ int Player::minScore(Side side, Board *board2) {
 
 double Player::negamax(Board *board, int depth, double alpha, double beta, int color, Side side)
 {
-    double bestValue = –std::numeric_limits<double>::infinity();
-
+    double bestValue = -10000;
     if ((depth == 0) || (board->isDone()))
     {
-        bestValue = color * board->boardScore();
+        bestValue = color * board->boardScore(side);
     }
     else
     {
@@ -190,11 +187,11 @@ double Player::negamax(Board *board, int depth, double alpha, double beta, int c
             other = BLACK;
         }
 
-        for (int i = 0; i < ; i++)
+        for (int i = 0; i < 8 ; i++)
         {
-            for (int j = 0; j < ; j++)
+            for (int j = 0; j < 8 ; j++)
             {
-                board *temp = board->copy();
+                Board *temp = board->copy();
                 Move *curr_move = new Move(i, j);
                 if (temp->checkMove(curr_move, other))
                 {
@@ -207,8 +204,6 @@ double Player::negamax(Board *board, int depth, double alpha, double beta, int c
                         goto stop;
                     }
                 }
-                delete temp;
-                delete curr_move;
             }
         }
     }
